@@ -1,0 +1,11 @@
+{
+  "name": "package.json",
+  "version": "1.0.0",
+  "description": "Learn_io_backends",
+  "main": "app.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
