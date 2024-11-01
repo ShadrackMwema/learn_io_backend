@@ -1,17 +1,19 @@
-const app = require('./app');
 const envUtils = require('./common/envUtils');
+
+// Load environment variables synchronously
+envUtils.loadEnv();
+
+const app = require('./app'); // Other imports come after loadEnv()
 const routes = require('./routes/index');
 const Initializer = require('./common/initializer');
 const errorHandler = require('./middlewares/errorMiddleware');
 const logRequestResponse = require('./middlewares/loggerMiddleware');
 
-
 Initializer.init().then(() => {
   try {
     const apiVersion = envUtils.get('API_VERSION') || 'v0.1';
-    
-    app.use(`/${apiVersion}`, routes);
 
+    app.use(`/${apiVersion}`, routes);
     app.use('/', routes);
 
     app.use(logRequestResponse);

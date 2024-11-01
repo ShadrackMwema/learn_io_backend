@@ -8,21 +8,17 @@ class EnvUtils {
     this.envvars = {};
   }
 
-  async loadEnv(filePath = '.env') {
+  loadEnv(filePath = '.env') {
     if (!this.envLoaded) {
-      return new Promise((resolve, reject) => {
-        try {
-          dotenv.config({ path: path.resolve(process.cwd(), filePath) });
-          this.envLoaded = true;
-          this.envvars = process.env;
-          logger.info(`Environment variables loaded from ${filePath}`);
-          resolve();
-        } catch (error) {
-          reject(error);
-        }
-      });
+      try {
+        dotenv.config({ path: path.resolve(process.cwd(), filePath) });
+        this.envLoaded = true;
+        this.envvars = process.env;
+        logger.info(`Environment variables loaded from ${filePath}`);
+      } catch (error) {
+        throw new Error(`Failed to load environment variables: ${error.message}`);
+      }
     }
-    return null;
   }
 
   get(variable) {
