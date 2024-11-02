@@ -18,13 +18,26 @@ const userSchema = new mongoose.Schema({
     },
     passwordConfirm: {
         type: String,
-        required: [true, 'Please confirm your password'],
-        validate: {
-            validator: function(el) {
-                return el === this.password;
-            },
-            message: 'Passwords do not match!'
-        }
+        required: [true, 'Please confirm your password']
+    },
+    profilePicture: {
+        type: String, // URL or path to profile picture
+        default: ''
+    },
+    bio: {
+        type: String,
+        maxlength: 500
+    },
+    role: {
+        type: String
+    },
+    status: {
+        type: String,
+        default: ''
+    },
+    is_deleted: {
+        type: String,
+        default: false
     }
 });
 
@@ -32,7 +45,6 @@ const userSchema = new mongoose.Schema({
 userSchema.pre('save', async function(next) {
     if (!this.isModified('password')) return next();
     this.password = await bcrypt.hash(this.password, 12);
-    this.passwordConfirm = undefined; // Don't save the confirm password field in the DB
     next();
 });
 

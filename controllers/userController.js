@@ -66,3 +66,65 @@ exports.getAllUsers = async (req, res) => {
         });
     }
 };
+
+exports.updateUser = async (req, res) => {
+    try {
+        const updates = {
+            name: req.body.name,
+            profilePicture: req.body.profilePicture,
+            bio: req.body.bio,
+            role: req.body.role,
+            status: req.body.role,
+            is_deleted: req.body.is_deleted
+            // Add other updatable fields here as necessary
+        };
+
+        const user = await User.findByIdAndUpdate(req.params.id, updates, {
+            new: true, // Return the updated document
+            runValidators: true // Validate the update
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                status: 'fail',
+                message: 'User not found'
+            });
+        }
+
+        res.status(200).json({
+            status: 'success',
+            data: {
+                user
+            }
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: 'error',
+            message: error.message
+        });
+    }
+};
+
+exports.deleteUser = async (req, res) => {
+    try {
+        const user = await User.findByIdAndDelete(req.params.id);
+
+        if (!user) {
+            return res.status(404).json({
+                status: 'fail',
+                message: 'User not found'
+            });
+        }
+        data.users[0].is_deleted = true;
+        
+        res.status(204).json({
+            status: 'success',
+            data
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: 'error',
+            message: error.message
+        });
+    }
+};

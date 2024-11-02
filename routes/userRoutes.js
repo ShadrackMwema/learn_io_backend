@@ -104,4 +104,66 @@ router.post('/register', userController.register);
  */
 router.get('/users', userController.getAllUsers);
 
+
+/**
+ * @swagger
+ * /api/users/{id}:
+ *   patch:
+ *     summary: Update a user
+ *     description: Update user profile fields like name, profile picture, and bio.
+ *     tags:
+ *       - Users
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: User ID
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               profilePicture:
+ *                 type: string
+ *               bio:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Updated user profile
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ *   delete:
+ *     summary: Delete a user
+ *     description: Permanently delete a user by their ID.
+ *     tags:
+ *       - Users
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: User ID
+ *         schema:
+ *           type: string
+ *     responses:
+ *       204:
+ *         description: User deleted successfully
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
+router.patch('/users/:id', userController.updateUser);
+router.delete('/users/:id', userController.deleteUser);
+
+
 module.exports = router;
