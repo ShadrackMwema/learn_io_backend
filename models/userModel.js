@@ -1,7 +1,13 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const { v4: uuidv4 } = require('uuid');
 
 const userSchema = new mongoose.Schema({
+    id: {
+        type: String,
+        default: uuidv4,
+        unique: true
+    },
     name: {
         type: String,
         required: [true, 'Please tell us your name!']
@@ -15,10 +21,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please provide a password'],
         minlength: 8
-    },
-    passwordConfirm: {
-        type: String,
-        required: [true, 'Please confirm your password']
     },
     profilePicture: {
         type: String, // URL or path to profile picture
@@ -36,7 +38,7 @@ const userSchema = new mongoose.Schema({
         default: ''
     },
     is_deleted: {
-        type: String,
+        type: Boolean,
         default: false
     }
 });

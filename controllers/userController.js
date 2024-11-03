@@ -19,12 +19,12 @@ exports.register = async (req, res) => {
             return res.status(400).json({ message: 'User already exists' });
         }
 
-        // Create new user
+        // Create new user without saving passwordConfirm
         const user = new User({
             name,
             email,
-            password,
-            passwordConfirm
+            password // password will be hashed automatically
+            // No need to save passwordConfirm
         });
 
         // Save user to database
@@ -49,9 +49,10 @@ exports.register = async (req, res) => {
     }
 };
 
+
 exports.getAllUsers = async (req, res) => {
     try {
-        const users = await User.find().select('-password'); // Exclude password field for security
+        const users = await User.find(); // Exclude password field for security
         res.status(200).json({
             status: 'success',
             results: users.length,
@@ -107,7 +108,15 @@ exports.updateUser = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
     try {
-        const user = await User.findByIdAndDelete(req.params.id);
+        // Update the user to set is_deleted to true
+        const user = await User.findByIdAndUpdate(
+            req.params.id,
+            { is_deleted: true }, // Update the is_deleted field
+            {
+                new: true, // Return the updated document
+                runValidators: true // Validate the update
+            }
+        );
 
         if (!user) {
             return res.status(404).json({
@@ -115,11 +124,12 @@ exports.deleteUser = async (req, res) => {
                 message: 'User not found'
             });
         }
-        data.users[0].is_deleted = true;
-        
-        res.status(204).json({
+
+        res.status(200).json({
             status: 'success',
-            data
+            data: {
+                user
+            }
         });
     } catch (error) {
         res.status(500).json({
