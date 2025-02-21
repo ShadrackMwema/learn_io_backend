@@ -127,9 +127,11 @@ router.post('/login', userController.login);
  * /api/users:
  *   get:
  *     summary: Retrieve all users
- *     description: Fetch a list of all users in the system.
+ *     description: Fetch a list of all users in the system. Only accessible by admins.
  *     tags:
  *       - Users
+ *     security:
+ *       - BearerAuth: []  # Requires JWT authentication
  *     responses:
  *       200:
  *         description: A list of users
@@ -157,10 +159,15 @@ router.post('/login', userController.login);
  *                             type: string
  *                           email:
  *                             type: string
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - User does not have permission
  *       500:
  *         description: Server error
  */
 router.get('/users', authenticateUser, authorizeRoles('admin'), userController.getAllUsers);
+
 
 
 /**
