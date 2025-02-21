@@ -6,7 +6,7 @@ const envUtils = require('../common/envUtils');
 
 exports.register = async (req, res) => {
     try {
-        const { name, email, password, passwordConfirm } = req.body;
+        const { name, email, role, password, passwordConfirm } = req.body;
 
         // Check if passwords match
         if (password !== passwordConfirm) {
@@ -23,6 +23,7 @@ exports.register = async (req, res) => {
         const user = new User({
             name,
             email,
+            role,
             password // password will be hashed automatically
             // No need to save passwordConfirm
         });
