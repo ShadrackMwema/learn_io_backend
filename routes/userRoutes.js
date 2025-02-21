@@ -67,6 +67,63 @@ router.post('/register', userController.register);
 
 /**
  * @swagger
+ * /api/login:
+ *   post:
+ *     summary: Login a user
+ *     description: Authenticate a user and return a JWT token.
+ *     tags:
+ *       - Users
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: brandon@example.com
+ *                 description: The user's email address.
+ *               password:
+ *                 type: string
+ *                 example: your_password
+ *                 description: The user's password.
+ *     responses:
+ *       200:
+ *         description: User logged in successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Login successful
+ *                 token:
+ *                   type: string
+ *                   description: JWT token for the authenticated user
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     name:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     role:
+ *                       type: string
+ *       400:
+ *         description: Bad request, missing email or password
+ *       401:
+ *         description: Unauthorized, invalid credentials
+ *       500:
+ *         description: Server error
+ */
+router.post('/login', userController.login);
+
+/**
+ * @swagger
  * /api/users:
  *   get:
  *     summary: Retrieve all users
@@ -165,6 +222,7 @@ router.get('/users', authenticateUser, authorizeRoles('admin'), userController.g
  */
 router.patch('/users/:id',authenticateUser, authorizeRoles('admin', 'staff'), userController.updateUser);
 router.delete('/users/:id', authenticateUser, authorizeRoles('admin'), userController.deleteUser);
+
 
 
 module.exports = router;
