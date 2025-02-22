@@ -14,6 +14,15 @@ const swaggerDefinition = {
             url: `http://localhost:${envUtils.get('PORT') || 3000}`,
         },
     ],
+     components: {
+        securitySchemes: {
+            BearerAuth: {
+                type: 'http',
+                scheme: 'bearer',
+                bearerFormat: 'JWT', // This indicates that we use a JWT token
+            },
+        },
+    },
 };
 
 const options = {
