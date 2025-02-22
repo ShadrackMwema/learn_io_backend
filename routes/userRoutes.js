@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
+const { authenticateUser, authorizeRoles } = require('../middlewares/authourizationMiddleware');
 
 /**
  * @swagger
@@ -66,12 +67,71 @@ router.post('/register', userController.register);
 
 /**
  * @swagger
+ * /api/login:
+ *   post:
+ *     summary: Login a user
+ *     description: Authenticate a user and return a JWT token.
+ *     tags:
+ *       - Users
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: brandon@example.com
+ *                 description: The user's email address.
+ *               password:
+ *                 type: string
+ *                 example: your_password
+ *                 description: The user's password.
+ *     responses:
+ *       200:
+ *         description: User logged in successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Login successful
+ *                 token:
+ *                   type: string
+ *                   description: JWT token for the authenticated user
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     name:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     role:
+ *                       type: string
+ *       400:
+ *         description: Bad request, missing email or password
+ *       401:
+ *         description: Unauthorized, invalid credentials
+ *       500:
+ *         description: Server error
+ */
+router.post('/login', userController.login);
+
+/**
+ * @swagger
  * /api/users:
  *   get:
  *     summary: Retrieve all users
- *     description: Fetch a list of all users in the system.
+ *     description: Fetch a list of all users in the system. Only accessible by admins.
  *     tags:
  *       - Users
+ *     security:
+ *       - BearerAuth: []  # Requires JWT authentication
  *     responses:
  *       200:
  *         description: A list of users
@@ -99,10 +159,15 @@ router.post('/register', userController.register);
  *                             type: string
  *                           email:
  *                             type: string
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - User does not have permission
  *       500:
  *         description: Server error
  */
-router.get('/users', userController.getAllUsers);
+router.get('/users', authenticateUser, authorizeRoles('admin'), userController.getAllUsers);
+
 
 
 /**
@@ -162,8 +227,9 @@ router.get('/users', userController.getAllUsers);
  *       500:
  *         description: Server error
  */
-router.patch('/users/:id', userController.updateUser);
-router.delete('/users/:id', userController.deleteUser);
+router.patch('/users/:id',authenticateUser, authorizeRoles('admin', 'staff'), userController.updateUser);
+router.delete('/users/:id', authenticateUser, authorizeRoles('admin'), userController.deleteUser);
+
 
 
 module.exports = router;
