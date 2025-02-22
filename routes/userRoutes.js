@@ -168,7 +168,7 @@ router.post('/login', userController.login);
  */
 router.get('/users', authenticateUser, authorizeRoles('admin'), userController.getAllUsers);
 
-
+	
 
 /**
  * @swagger
@@ -178,6 +178,8 @@ router.get('/users', authenticateUser, authorizeRoles('admin'), userController.g
  *     description: Update user profile fields like name, profile picture, and bio.
  *     tags:
  *       - Users
+ *     security:
+ *       - BearerAuth: []  # Requires JWT authentication
  *     parameters:
  *       - name: id
  *         in: path
@@ -212,6 +214,8 @@ router.get('/users', authenticateUser, authorizeRoles('admin'), userController.g
  *     description: Permanently delete a user by their ID.
  *     tags:
  *       - Users
+ *     security:
+ *       - BearerAuth: []  # Requires JWT authentication
  *     parameters:
  *       - name: id
  *         in: path
@@ -227,9 +231,7 @@ router.get('/users', authenticateUser, authorizeRoles('admin'), userController.g
  *       500:
  *         description: Server error
  */
-router.patch('/users/:id',authenticateUser, authorizeRoles('admin', 'staff'), userController.updateUser);
+router.patch('/users/:id', authenticateUser, authorizeRoles('admin', 'staff'), userController.updateUser);
 router.delete('/users/:id', authenticateUser, authorizeRoles('admin'), userController.deleteUser);
-
-
 
 module.exports = router;
