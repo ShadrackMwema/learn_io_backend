@@ -144,4 +144,34 @@ router.put('/articles/:id', articlesController.updateArticle);
  */
 router.delete('/articles/:id', articlesController.deleteArticle);
 
+
+/**
+ * @swagger
+ * /articles:
+ *   get:
+ *     summary: Get all articles
+ *     description: Retrieve a list of all articles.
+ *     tags:
+ *       - Articles
+ *     responses:
+ *       200:
+ *         description: A list of articles
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   title:
+ *                     type: string
+ *                   content:
+ *                     type: string
+ *       500:
+ *         description: Server error
+ */
+router.get('/articles', articlesController.getAllArticles);
+
 module.exports = router;
